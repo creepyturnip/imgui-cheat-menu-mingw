@@ -87,6 +87,7 @@ int createWindowWithImgui(int windowWith, int windowHeight, int maximized, int d
         ImGui::NewFrame();
         {
             ImGui::Begin("Hello, Imgui!");
+            
             ImGui::End();
         }
 
