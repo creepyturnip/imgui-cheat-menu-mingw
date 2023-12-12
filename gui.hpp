@@ -18,10 +18,7 @@
 #include "../libs/emscripten/emscripten_mainloop_stub.h"
 #endif
 
-constexpr int imguiWIDTH = 400;
-constexpr int imguiHeight = 300;
-
-bool focussed = true;
+bool test;
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -55,6 +52,7 @@ int createWindowWithImgui(int windowWith, int windowHeight, int maximized, int d
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.IniFilename = NULL;
 
     //style
     ImGui::StyleColorsDark();
@@ -71,25 +69,25 @@ int createWindowWithImgui(int windowWith, int windowHeight, int maximized, int d
     {
         glfwPollEvents();
 
-        if (GetAsyncKeyState(VK_INSERT) & 0x01) {
-            focussed = !focussed;
-            if (focussed) {
-                glfwRestoreWindow(window);
-            } else {
-                glfwIconifyWindow(window);
-            }
-        }
-
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
-        ImGui::SetNextWindowSize({imguiWIDTH, imguiHeight});
         ImGui::NewFrame();
-        {
-            ImGui::Begin("Hello, Imgui!");
-            
-            ImGui::End();
-        }
+        
+        int width, height;
+        glfwGetWindowSize(window, &width, &height);
+        ImGui::SetNextWindowSize(ImVec2(width, height)); // ensures ImGui fits the GLFW window
+        ImGui::SetNextWindowPos(ImVec2(0, 0));
+        
+        ImGui::Begin("Hello, Imgui!", nullptr, ImGuiWindowFlags_NoDecoration);
+
+        ImGui::ShowStyleEditor();
+        
+        ImGui::Text("Hello world");
+        ImGui::Checkbox("Checkbox", &test);
+        ImGui::Button("button");
+
+        ImGui::End();
 
 
         // Rendering
